@@ -17,6 +17,10 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def home():
+    return "Ahh, I see you've found this API 🦄. Welcome 🦚"
+
 @app.post("/signup")
 def sign_up(user: schemas.UserSignUp, db: Session = Depends(get_db)):
     db_user = schemas.UserCreate(**user.dict())
