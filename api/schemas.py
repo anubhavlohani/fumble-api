@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 
 class UserSignUp(BaseModel):
-    id: int
     username: str
     name: str
     password: str
