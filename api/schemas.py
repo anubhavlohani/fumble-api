@@ -1,11 +1,15 @@
 from pydantic import BaseModel
 
 
-class UserSignUp(BaseModel):
-    username: str
-    name: str
-    password: str
-    email: str
+class UserLogin(BaseModel):
+  username: str
+  password: str
 
-    class Config:
-      orm_mode = True
+class UserSignUp(UserLogin):
+  username: str
+  name: str
+  password: str
+  email: str
+
+  class Config:
+    orm_mode = True
