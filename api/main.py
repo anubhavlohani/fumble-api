@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, Depends, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -56,9 +56,18 @@ def sign_up(user: schemas.UserSignUp, db: Session = Depends(get_db)):
 	return {'success': True}
 
 @app.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db:Session = Depends(get_db)):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
 	auth_data = helpers.authenticate_user(db, form_data)
 	return auth_data
+
+@app.post("/uploadFile")
+async def upload_file(image: UploadFile, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	user = helpers.decode_token(db, token)
+	image_content = await image.read()
+	crud.add_meme(db, user, image_content)
+	return {'success': True}
+
+
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)
