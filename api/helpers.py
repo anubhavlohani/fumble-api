@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from jose import jwt
+from jose import jwt, ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
 
-from . import crud
+from . import crud, models
 from .config import SECRET_KEY, ALGORITHM
 
 
@@ -39,3 +39,15 @@ def authenticate_user(db: Session, form_data: OAuth2PasswordRequestForm) -> dict
 	access_token = create_access_token(token_data)
 
 	return {"access_token": access_token, "token_type": "bearer"}
+
+def decode_token(db: Session, token: str) -> models.User:
+	try:
+		decoded_jwt = jwt.decode(token, SECRET_KEY, ALGORITHM)
+	except ExpiredSignatureError:
+		raise HTTPException(status_code=440, detail="Session Expired, please login again.")
+	except JWTError:
+		raise HTTPException(status_code=401, detail="Invalid authentication")
+	current_user = crud.get_user(db, decoded_jwt['username'])
+	if current_user is None:
+		raise HTTPException(status_code=404, detail="User not found")
+	return current_user
