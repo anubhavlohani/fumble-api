@@ -5,4 +5,3 @@ SQLALCHEMY_DATABASE_URL = "sqlite:///" + os.path.join(curr_dir, 'database.sqlite
 
 SECRET_KEY = 'wellWellWellIfItAintTheInvisibleC*nt'
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1440
