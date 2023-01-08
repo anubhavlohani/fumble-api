@@ -44,7 +44,7 @@ def decode_token(db: Session, token: str) -> models.User:
 	try:
 		decoded_jwt = jwt.decode(token, SECRET_KEY, ALGORITHM)
 	except ExpiredSignatureError:
-		raise HTTPException(status_code=440, detail="Session Expired, please login again.")
+		raise HTTPException(status_code=440, detail="Session expired, please login again.")
 	except JWTError:
 		raise HTTPException(status_code=401, detail="Invalid authentication")
 	current_user = crud.get_user(db, decoded_jwt['username'])

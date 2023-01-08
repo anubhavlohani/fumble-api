@@ -60,11 +60,16 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 	auth_data = helpers.authenticate_user(db, form_data)
 	return auth_data
 
-@app.post("/uploadFile")
+@app.post("/file-upload")
 async def upload_file(image: UploadFile, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	user = helpers.decode_token(db, token)
 	image_content = await image.read()
 	crud.add_meme(db, user, image_content)
+	return {'success': True}
+
+@app.get('/verify-token')
+def verify_token(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
 	return {'success': True}
 
 
