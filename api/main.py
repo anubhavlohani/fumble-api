@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, UploadFile
+from fastapi import FastAPI, HTTPException, Depends, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -37,22 +37,17 @@ def get_db():
 def home():
 	return "Ahh, I see you've found this API 🦄. Welcome 🦚"
 
-@app.get("/get-user")
-def does_user_exist(username: str, db: Session = Depends(get_db)):
-	user = crud.get_user(db, username)
-	data = {
-		'found': True if user else False,
-		'user': user
-	}
-	return data
-
 @app.post("/signup")
 def sign_up(user: schemas.UserSignUp, db: Session = Depends(get_db)):
+	existing_user = crud.get_user(db, user.username)
+	if existing_user:
+		raise HTTPException(status_code=409, detail='Another user with this username exists. Try logging in or use a different username.')
 	try:
 		user.password = helpers.generate_password_hash(user.password)
 		crud.create_user(db, user)
 	except Exception as err:
 		print(err)
+		raise HTTPException(status_code=422)
 	return {'success': True}
 
 @app.post("/login")
