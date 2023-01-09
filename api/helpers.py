@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from jose import jwt, ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
 
-import crud, models
-from config import SECRET_KEY, ALGORITHM
+from . import crud, models
+from .config import SECRET_KEY, ALGORITHM
 
 
 
