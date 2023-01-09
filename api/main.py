@@ -5,8 +5,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 import uvicorn
 
-from . import models, schemas, crud, helpers
-from .database import SessionLocal, engine
+import models, schemas, crud, helpers
+from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
