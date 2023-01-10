@@ -59,7 +59,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 async def upload_file(image: UploadFile, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	user = helpers.decode_token(db, token)
 	image_content = await image.read()
-	crud.add_meme(db, user, image_content)
+	image_name = image.filename
+	crud.add_meme(db, user, image_content, image_name, 'xyz')
 	return {'success': True}
 
 @app.get('/verify-token')
