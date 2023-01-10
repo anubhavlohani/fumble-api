@@ -16,7 +16,7 @@ app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 app.add_middleware(
 	CORSMiddleware,
-	allow_origins=["http://localhost:3000"],
+	allow_origins=["http://localhost:3000", "https://exquisite-salamander-ca0e85.netlify.app"],
 	allow_credentials=True,
 	allow_methods=["*"],
 	allow_headers=["*"],
