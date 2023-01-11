@@ -4,9 +4,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from sqlalchemy.orm import Session
 import uvicorn
+import tekore as tk
 
 from . import models, schemas, crud, helpers
 from .database import SessionLocal, engine
+from .config import get_spotify
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -21,6 +23,8 @@ app.add_middleware(
 	allow_methods=["*"],
 	allow_headers=["*"],
 )
+
+spotify = get_spotify()
 
 # Dependency
 def get_db():
@@ -55,19 +59,15 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 	auth_data = helpers.authenticate_user(db, form_data)
 	return auth_data
 
-@app.post("/file-upload")
-async def upload_file(image: UploadFile, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-	user = helpers.decode_token(db, token)
-	image_content = await image.read()
-	image_name = image.filename
-	crud.add_meme(db, user, image_content, image_name, 'xyz')
-	return {'success': True}
-
 @app.get('/verify-token')
 def verify_token(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	helpers.decode_token(db, token)
 	return {'success': True}
 
+@app.get('/search-spotify')
+def search_spotify(q: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	search_res = helpers.search_spotify(spotify, q)
+	return {'results': search_res}
 
 
 if __name__ == "__main__":

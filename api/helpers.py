@@ -3,10 +3,12 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
 from jose import jwt, ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
+import tekore as tk
 
-from . import crud, models
+from . import crud, models, schemas
 from .config import SECRET_KEY, ALGORITHM
 
 
@@ -51,3 +53,29 @@ def decode_token(db: Session, token: str) -> models.User:
 	if current_user is None:
 		raise HTTPException(status_code=404, detail="User not found")
 	return current_user
+
+
+
+'''
+Spotify Helper Functions
+Note: We instantiate a Spotify client (with auto-refreshing client token)
+while instantiating FastApi app in main.py which is created in config.py
+'''
+def search_spotify(spotify: tk.Spotify, query: str) -> list[schemas.Item]:
+	res = spotify.search(query=query, limit=50)
+	all_tracks = res[0].items
+	lowercased_track_names = []
+	for track in all_tracks:
+		if track.name.lower() not in lowercased_track_names:
+			lowercased_track_names.append(track.name.lower())
+	result = []
+	for track_name in lowercased_track_names:
+		track = None
+		for x in all_tracks:
+			if track_name == x.name.lower():
+				track = x
+				break
+		result.append(schemas.Item(id=track.id, name=track.name))
+	result = result[:10]
+	return result
+	
