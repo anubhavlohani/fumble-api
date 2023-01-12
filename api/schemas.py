@@ -17,6 +17,11 @@ class UserSignUp(UserLogin):
   class Config:
     orm_mode = True
 
+class NewStory(BaseModel):
+  track_id: str
+  caption: str
+
+
 
 '''
 Spotify schemas
