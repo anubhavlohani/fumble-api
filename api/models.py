@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -14,13 +16,14 @@ class User(Base):
 	password = Column(String, nullable=False)
 	email = Column(String, nullable=False)
 
-	memes = relationship("Meme", backref="owner")
+	stories = relationship("Story", backref="user")
 
-class Meme(Base):
-	__tablename__ = 'meme'
+
+class Story(Base):
+	__tablename__ = 'story'
 
 	id = Column(Integer, primary_key=True, autoincrement=True)
-	filename = Column(String, unique=False, nullable=False)
+	user_id = Column(Integer, ForeignKey("user.id"), unique=False, nullable=False)
+	track_id = Column(String, unique=False, nullable=False)
 	caption = Column(String, unique=False, nullable=True)
-	filepath = Column(String, unique=True, nullable=False)
-	owner_id = Column(Integer, ForeignKey("user.id"))
+	time_created = Column(DateTime, unique=False, nullable=False, default=datetime.datetime.now())
