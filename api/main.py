@@ -1,10 +1,9 @@
-from fastapi import FastAPI, HTTPException, Depends, UploadFile
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from sqlalchemy.orm import Session
 import uvicorn
-import tekore as tk
 
 from . import models, schemas, crud, helpers
 from .database import SessionLocal, engine
@@ -51,7 +50,7 @@ def sign_up(user: schemas.UserSignUp, db: Session = Depends(get_db)):
 		crud.create_user(db, user)
 	except Exception as err:
 		print(err)
-		raise HTTPException(status_code=422)
+		raise HTTPException(status_code=422, detail="Unable to create new user")
 	return {'success': True}
 
 @app.post("/login")
@@ -65,10 +64,19 @@ def verify_token(token: str = Depends(oauth2_scheme), db: Session = Depends(get_
 	return {'success': True}
 
 @app.get('/search-spotify')
-def search_spotify(q: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def search_spotify(q: str):
 	search_res = helpers.search_spotify(spotify, q)
 	return {'results': search_res}
 
+@app.post('/create-story')
+def create_story(story: schemas.NewStory, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	user = helpers.decode_token(db, token)
+	try:
+		crud.create_story(db, user, story)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="Unable to create new story")
+	return {'success': True}
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)
