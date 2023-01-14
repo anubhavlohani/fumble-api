@@ -78,4 +78,37 @@ def search_spotify(spotify: tk.Spotify, query: str) -> list[schemas.Item]:
 		result.append(schemas.Item(id=track.id, name=track.name))
 	result = result[:10]
 	return result
+
+def artist_details(spotify: tk.Spotify, artist_id: str) -> schemas.Artist:
+	artist = spotify.artist(artist_id=artist_id)
+	artist = schemas.Artist(
+		id=artist.id,
+		name=artist.name,
+		followers=artist.followers.total,
+		genres=artist.genres,
+		popularity=artist.popularity,
+		images=[image.url for image in artist.images]
+	)
+	return artist
 	
+def album_details(spotify: tk.Spotify, album_id: str) -> schemas.Album:
+	album = spotify.album(album_id=album_id)
+	album = schemas.Album(
+		id=album.id,
+		name=album.name,
+		artists=[artist_details(spotify, artist.id) for artist in album.artists],
+		images=[image.url for image in album.images]
+	)
+	return album
+
+def track_details(spotify: tk.Spotify, track_id: str) -> schemas.Track:
+	track = spotify.track(track_id=track_id)
+	artists = [artist_details(spotify, artist.id) for artist in track.artists]
+	album = album_details(spotify, track.album.id)
+	track = schemas.Track(
+		id=track.id,
+		name=track.name,
+		artists=artists,
+		album=album
+	)
+	return track
