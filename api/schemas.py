@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+import datetime
 
 
 '''
@@ -26,22 +27,31 @@ class NewStory(BaseModel):
 '''
 Spotify schemas
 '''
-class Image(BaseModel):
-  url: str
-
 class Item(BaseModel):
   id: str
   name: str
 
 class Artist(Item):
+  followers: int
+  genres: list[str]
   popularity: int
-  images: list[Image]
+  images: list[str]
 
 class Album(Item):
   artists: list[Artist]
-  images: list[Image]
+  images: list[str]
 
 class Track(Item):
-  name: str
   artists: list[Artist]
   album: Album
+
+
+
+'''
+Hybrid schemas
+'''
+class DetailedStory(BaseModel):
+  username: str
+  track: Track
+  caption: str
+  time_created: datetime.datetime

@@ -17,7 +17,7 @@ app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 app.add_middleware(
 	CORSMiddleware,
-	allow_origins=["http://localhost:3000", "https://exquisite-salamander-ca0e85.netlify.app"],
+	allow_origins=["*"],
 	allow_credentials=True,
 	allow_methods=["*"],
 	allow_headers=["*"],
@@ -77,6 +77,14 @@ def create_story(story: schemas.NewStory, token: str = Depends(oauth2_scheme), d
 		print(err)
 		raise HTTPException(status_code=422, detail="Unable to create new story")
 	return {'success': True}
+
+@app.get('/all-stories')
+def all_stories(db: Session = Depends(get_db)):
+	stories = crud.all_stories(db, spotify)
+	return {'stories': stories}
+
+
+
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)
