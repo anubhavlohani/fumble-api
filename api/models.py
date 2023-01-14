@@ -1,5 +1,3 @@
-import datetime
-
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -26,4 +24,4 @@ class Story(Base):
 	user_id = Column(Integer, ForeignKey("user.id"), unique=False, nullable=False)
 	track_id = Column(String, unique=False, nullable=False)
 	caption = Column(String, unique=False, nullable=True)
-	time_created = Column(DateTime, unique=False, nullable=False, default=datetime.datetime.now())
+	time_created = Column(DateTime, unique=False, nullable=False)
