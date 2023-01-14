@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy.orm import Session
 import tekore as tk
 
@@ -20,6 +22,7 @@ def create_user(db: Session, user: schemas.UserSignUp) -> models.User:
 def create_story(db: Session, user: models.User, story: schemas.NewStory) -> models.Story:
 	story_data = story.dict()
 	story_data['user_id'] = user.id
+	story_data['time_created'] = datetime.datetime.now()
 	new_story = models.Story(**story_data)
 	db.add(new_story)
 	db.commit()
@@ -38,4 +41,6 @@ def all_stories(db: Session, spotify: tk.Spotify) -> list[schemas.DetailedStory]
 			time_created=story.time_created
 		)
 		detailed_stories.append(detailed_story)
+	# sort by time by default
+	detailed_stories = sorted(detailed_stories, key=lambda x: x.time_created, reverse=True)
 	return detailed_stories
