@@ -78,5 +78,13 @@ def create_story(story: schemas.NewStory, token: str = Depends(oauth2_scheme), d
 		raise HTTPException(status_code=422, detail="Unable to create new story")
 	return {'success': True}
 
+@app.get('/all-stories')
+def all_stories(db: Session = Depends(get_db)):
+	stories = crud.all_stories(db, spotify)
+	return {'stories': stories}
+
+
+
+
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)
