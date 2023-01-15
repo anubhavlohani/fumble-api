@@ -109,6 +109,7 @@ def track_details(spotify: tk.Spotify, track_id: str) -> schemas.Track:
 		id=track.id,
 		name=track.name,
 		artists=artists,
-		album=album
+		album=album,
+		preview_url=track.preview_url
 	)
 	return track

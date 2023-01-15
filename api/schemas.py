@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Union
 import datetime
 
 
@@ -44,6 +45,7 @@ class Album(Item):
 class Track(Item):
   artists: list[Artist]
   album: Album
+  preview_url: Union[str, None]
 
 
 
