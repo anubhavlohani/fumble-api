@@ -31,6 +31,7 @@ Spotify schemas
 class Item(BaseModel):
   id: str
   name: str
+  spotify_url: str
 
 class Artist(Item):
   followers: int
@@ -41,6 +42,7 @@ class Artist(Item):
 class Album(Item):
   artists: list[Artist]
   images: list[str]
+  release_date: str
 
 class Track(Item):
   artists: list[Artist]

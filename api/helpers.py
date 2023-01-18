@@ -84,6 +84,7 @@ def artist_details(spotify: tk.Spotify, artist_id: str) -> schemas.Artist:
 	artist = schemas.Artist(
 		id=artist.id,
 		name=artist.name,
+		spotify_url=artist.external_urls['spotify'],
 		followers=artist.followers.total,
 		genres=artist.genres,
 		popularity=artist.popularity,
@@ -96,8 +97,10 @@ def album_details(spotify: tk.Spotify, album_id: str) -> schemas.Album:
 	album = schemas.Album(
 		id=album.id,
 		name=album.name,
+		spotify_url=album.external_urls['spotify'],
 		artists=[artist_details(spotify, artist.id) for artist in album.artists],
-		images=[image.url for image in album.images]
+		images=[image.url for image in album.images],
+		release_date=album.release_date
 	)
 	return album
 
@@ -108,6 +111,7 @@ def track_details(spotify: tk.Spotify, track_id: str) -> schemas.Track:
 	track = schemas.Track(
 		id=track.id,
 		name=track.name,
+		spotify_url=track.external_urls['spotify'],
 		artists=artists,
 		album=album,
 		preview_url=track.preview_url
