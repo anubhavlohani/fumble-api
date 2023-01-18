@@ -75,7 +75,7 @@ def search_spotify(spotify: tk.Spotify, query: str) -> list[schemas.Item]:
 			if track_name == x.name.lower():
 				track = x
 				break
-		result.append(schemas.Item(id=track.id, name=track.name))
+		result.append(schemas.Item(id=track.id, name=track.name, spotify_url=track.external_urls['spotify']))
 	result = result[:10]
 	return result
 
