@@ -90,7 +90,7 @@ def all_stories(db: Session = Depends(get_db)):
 	return {'stories': stories}
 
 @app.post('/like-story')
-def like_story(like: schemas.LikeStory, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def like_story(like: schemas.LikeAction, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	helpers.decode_token(db, token)
 	try:
 		crud.like_story(db, like)

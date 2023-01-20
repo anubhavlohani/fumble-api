@@ -49,7 +49,7 @@ def all_stories(db: Session, spotify: tk.Spotify) -> list[schemas.DetailedStory]
 	detailed_stories = sorted(detailed_stories, key=lambda x: x.time_created, reverse=True)
 	return detailed_stories
 
-def like_story(db: Session, like: schemas.LikeStory) -> models.Likes:
+def like_story(db: Session, like: schemas.LikeAction) -> models.Likes:
 	like_data = like.dict()
 	new_like = models.Likes(**like_data)
 	db.add(new_like)
