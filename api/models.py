@@ -25,3 +25,12 @@ class Story(Base):
 	track_id = Column(String, unique=False, nullable=False)
 	caption = Column(String, unique=False, nullable=True)
 	time_created = Column(DateTime, unique=False, nullable=False)
+
+
+class Likes(Base):
+	__tablename__ = "likes"
+
+	id = Column(Integer, primary_key=True, autoincrement=True)
+	user_id = Column(Integer, ForeignKey("user.id"), unique=False, nullable=False)
+	story_id = Column(Integer, ForeignKey("story.id"), unique=False, nullable=False)
+	
