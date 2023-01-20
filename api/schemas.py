@@ -70,4 +70,4 @@ class DetailedStory(BaseModel):
   track: Track
   caption: str
   time_created: datetime.datetime
-  liked_by: list[int]
+  liked: bool # denotes initial liked status of requesting user
