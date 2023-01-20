@@ -29,6 +29,10 @@ class ReturnUser(BaseModel):
   name: str
   email: str
 
+class LikeStory(BaseModel):
+  user_id: int
+  story_id: int
+
 
 
 '''
@@ -66,3 +70,4 @@ class DetailedStory(BaseModel):
   track: Track
   caption: str
   time_created: datetime.datetime
+  liked_by: list[int]
