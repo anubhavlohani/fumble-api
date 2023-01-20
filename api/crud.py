@@ -35,6 +35,7 @@ def all_stories(db: Session, spotify: tk.Spotify) -> list[schemas.DetailedStory]
 	for story in stories:
 		track = helpers.track_details(spotify, story.track_id)
 		detailed_story = schemas.DetailedStory(
+			id=story.id,
 			username=story.user.username,
 			track=track,
 			caption=story.caption,

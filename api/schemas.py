@@ -55,6 +55,7 @@ class Track(Item):
 Hybrid schemas
 '''
 class DetailedStory(BaseModel):
+  id: int
   username: str
   track: Track
   caption: str
