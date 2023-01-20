@@ -85,8 +85,9 @@ def create_story(story: schemas.NewStory, token: str = Depends(oauth2_scheme), d
 	return {'success': True}
 
 @app.get('/all-stories')
-def all_stories(db: Session = Depends(get_db)):
-	stories = crud.all_stories(db, spotify)
+def all_stories(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	user = helpers.decode_token(db, token)
+	stories = crud.all_stories(db, spotify, user)
 	return {'stories': stories}
 
 @app.post('/like-story')
