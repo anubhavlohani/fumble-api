@@ -96,7 +96,17 @@ def like_story(like: schemas.LikeAction, token: str = Depends(oauth2_scheme), db
 		crud.like_story(db, like)
 	except Exception as err:
 		print(err)
-		raise HTTPException(status_code=422, detail="Unable to create new story")
+		raise HTTPException(status_code=422, detail="An error occured while trying to like this story. Please try again.")
+	return {'success': True}
+
+@app.delete('/delete-like')
+def like_story(like: schemas.LikeAction, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.delete_like(db, like)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="An error occured while trying to like this story. Please try again.")
 	return {'success': True}
 
 
