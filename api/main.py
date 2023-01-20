@@ -89,6 +89,16 @@ def all_stories(db: Session = Depends(get_db)):
 	stories = crud.all_stories(db, spotify)
 	return {'stories': stories}
 
+@app.post('/like-story')
+def like_story(like: schemas.LikeStory, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.like_story(db, like)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="Unable to create new story")
+	return {'success': True}
+
 
 
 
