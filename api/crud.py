@@ -56,3 +56,11 @@ def like_story(db: Session, like: schemas.LikeAction) -> models.Likes:
 	db.commit()
 	db.refresh(new_like)
 	return new_like
+
+def delete_like(db: Session, like: schemas.LikeAction) -> bool:
+	to_delete = db.query(models.Likes).filter(like.user_id == models.Likes.user_id and like.story_id == models.Likes.story_id).first()
+	if to_delete:
+		db.delete(to_delete)
+		db.commit()
+		return True
+	return False
