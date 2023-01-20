@@ -23,6 +23,12 @@ class NewStory(BaseModel):
   track_id: str
   caption: str
 
+class ReturnUser(BaseModel):
+  id: int
+  username: str
+  name: str
+  email: str
+
 
 
 '''
