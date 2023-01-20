@@ -60,8 +60,14 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 @app.get('/verify-token')
 def verify_token(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-	helpers.decode_token(db, token)
-	return {'success': True}
+	user = helpers.decode_token(db, token)
+	user_details = schemas.ReturnUser(
+		id=user.id,
+		username=user.username,
+		name=user.name,
+		email=user.email
+	)
+	return {'user_details': user_details}
 
 @app.get('/search-spotify')
 def search_spotify(q: str):
