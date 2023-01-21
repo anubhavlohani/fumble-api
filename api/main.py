@@ -91,7 +91,7 @@ def all_stories(token: str = Depends(oauth2_scheme), db: Session = Depends(get_d
 	return {'stories': stories}
 
 @app.post('/like-story')
-def like_story(like: schemas.LikeAction, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	helpers.decode_token(db, token)
 	try:
 		crud.like_story(db, like)
@@ -101,7 +101,7 @@ def like_story(like: schemas.LikeAction, token: str = Depends(oauth2_scheme), db
 	return {'success': True}
 
 @app.delete('/delete-like')
-def like_story(like: schemas.LikeAction, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	helpers.decode_token(db, token)
 	try:
 		crud.delete_like(db, like)

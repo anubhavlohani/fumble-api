@@ -34,7 +34,7 @@ def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) 
 	detailed_stories = []
 	for story in stories:
 		track = helpers.track_details(spotify, story.track_id)
-		like_records = db.query(models.Likes).filter(models.Likes.story_id == story.id).all()
+		like_records = db.query(models.Like).filter(models.Like.story_id == story.id).all()
 		liked_by_user = False
 		for like_record in like_records:
 			if like_record.user_id == requesting_user.id:
@@ -53,16 +53,16 @@ def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) 
 	detailed_stories = sorted(detailed_stories, key=lambda x: x.time_created, reverse=True)
 	return detailed_stories
 
-def like_story(db: Session, like: schemas.LikeAction) -> models.Likes:
+def like_story(db: Session, like: schemas.NewLike) -> models.Like:
 	like_data = like.dict()
-	new_like = models.Likes(**like_data)
+	new_like = models.Like(**like_data)
 	db.add(new_like)
 	db.commit()
 	db.refresh(new_like)
 	return new_like
 
-def delete_like(db: Session, like: schemas.LikeAction) -> bool:
-	to_delete = db.query(models.Likes).filter(like.story_id == models.Likes.story_id).filter(like.user_id == models.Likes.user_id).first()
+def delete_like(db: Session, like: schemas.NewLike) -> bool:
+	to_delete = db.query(models.Like).filter(like.story_id == models.Like.story_id).filter(like.user_id == models.Like.user_id).first()
 	if to_delete:
 		db.delete(to_delete)
 		db.commit()

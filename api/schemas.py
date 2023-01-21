@@ -29,7 +29,7 @@ class ReturnUser(BaseModel):
   name: str
   email: str
 
-class LikeAction(BaseModel):
+class NewLike(BaseModel):
   user_id: int
   story_id: int
 
