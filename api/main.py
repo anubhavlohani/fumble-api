@@ -110,6 +110,12 @@ def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: S
 		raise HTTPException(status_code=422, detail="An error occured while trying to like this story. Please try again.")
 	return {'success': True}
 
+@app.get('/story-comments')
+def get_comments(story_id: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	comments = crud.get_comments(db, story_id)
+	return {'comments': comments}
+
 @app.post('/post-comment')
 def new_comment(comment: schemas.NewComment, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	helpers.decode_token(db, token)

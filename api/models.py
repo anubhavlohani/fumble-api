@@ -15,6 +15,7 @@ class User(Base):
 	email = Column(String, nullable=False)
 
 	stories = relationship("Story", backref="user")
+	comments = relationship("Comment", backref="user")
 
 
 class Story(Base):

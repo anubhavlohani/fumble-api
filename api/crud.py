@@ -40,6 +40,7 @@ def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) 
 			if like_record.user_id == requesting_user.id:
 				liked_by_user = True
 				break
+		comments = [{'content': comment.content, 'username': comment.user.username} for comment in story.comments]
 		detailed_story = schemas.DetailedStory(
 			id=story.id,
 			username=story.user.username,
@@ -47,7 +48,7 @@ def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) 
 			caption=story.caption,
 			time_created=story.time_created,
 			liked=liked_by_user,
-			comments=story.comments
+			comments=comments
 		)
 		detailed_stories.append(detailed_story)
 	# sort by time by default
@@ -69,6 +70,11 @@ def delete_like(db: Session, like: schemas.NewLike) -> bool:
 		db.commit()
 		return True
 	return False
+
+def get_comments(db: Session, story_id: str) -> list[dict]:
+	story = db.query(models.Story).filter(models.Story.id == story_id).first()
+	comments = [{'content': comment.content, 'username': comment.user.username} for comment in story.comments]
+	return comments
 
 def create_comment(db: Session, comment: schemas.NewComment) -> models.Comment:
 	comment_data = comment.dict()
