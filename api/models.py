@@ -26,11 +26,21 @@ class Story(Base):
 	caption = Column(String, unique=False, nullable=True)
 	time_created = Column(DateTime, unique=False, nullable=False)
 
+	comments = relationship("Comment", backref="story")
 
-class Likes(Base):
-	__tablename__ = "likes"
+
+class Like(Base):
+	__tablename__ = "like"
 
 	id = Column(Integer, primary_key=True, autoincrement=True)
 	user_id = Column(Integer, ForeignKey("user.id"), unique=False, nullable=False)
 	story_id = Column(Integer, ForeignKey("story.id"), unique=False, nullable=False)
-	
+
+
+class Comment(Base):
+	__tablename__ = "comment"
+
+	id = Column(Integer, primary_key=True, autoincrement=True)
+	content = Column(String, unique=False, nullable=False)
+	user_id = Column(Integer, ForeignKey("user.id"), unique=False, nullable=False)
+	story_id = Column(Integer, ForeignKey("story.id"), unique=False, nullable=False)
