@@ -46,7 +46,8 @@ def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) 
 			track=track,
 			caption=story.caption,
 			time_created=story.time_created,
-			liked=liked_by_user
+			liked=liked_by_user,
+			comments=story.comments
 		)
 		detailed_stories.append(detailed_story)
 	# sort by time by default

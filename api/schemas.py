@@ -76,3 +76,4 @@ class DetailedStory(BaseModel):
   caption: str
   time_created: datetime.datetime
   liked: bool # denotes initial liked status of requesting user
+  comments: Union[list, None]
