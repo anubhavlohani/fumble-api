@@ -23,15 +23,20 @@ class NewStory(BaseModel):
   track_id: str
   caption: str
 
+class NewLike(BaseModel):
+  user_id: int
+  story_id: int
+
+class NewComment(BaseModel):
+  user_id: int
+  story_id: int
+  content: str
+
 class ReturnUser(BaseModel):
   id: int
   username: str
   name: str
   email: str
-
-class NewLike(BaseModel):
-  user_id: int
-  story_id: int
 
 
 
