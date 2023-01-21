@@ -71,7 +71,7 @@ def delete_like(db: Session, like: schemas.NewLike) -> bool:
 
 def create_comment(db: Session, comment: schemas.NewComment) -> models.Comment:
 	comment_data = comment.dict()
-	new_comment = models.Like(**comment_data)
+	new_comment = models.Comment(**comment_data)
 	db.add(new_comment)
 	db.commit()
 	db.refresh(new_comment)
