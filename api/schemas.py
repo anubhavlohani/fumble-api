@@ -38,6 +38,11 @@ class ReturnUser(BaseModel):
   name: str
   email: str
 
+class Comment(BaseModel):
+  user_id: int
+  username: str
+  content: str
+
 
 
 '''
@@ -76,4 +81,3 @@ class DetailedStory(BaseModel):
   caption: str
   time_created: datetime.datetime
   liked: bool # denotes initial liked status of requesting user
-  comments: Union[list, None]
