@@ -55,6 +55,7 @@ def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) 
 
 def like_story(db: Session, like: schemas.NewLike) -> models.Like:
 	like_data = like.dict()
+	like_data['time_created'] = datetime.datetime.now()
 	new_like = models.Like(**like_data)
 	db.add(new_like)
 	db.commit()
@@ -83,6 +84,7 @@ def get_comments(db: Session, story_id: str) -> list[schemas.Comment]:
 
 def create_comment(db: Session, comment: schemas.NewComment) -> models.Comment:
 	comment_data = comment.dict()
+	comment_data['time_created'] = datetime.datetime.now()
 	new_comment = models.Comment(**comment_data)
 	db.add(new_comment)
 	db.commit()

@@ -36,6 +36,7 @@ class Like(Base):
 	id = Column(Integer, primary_key=True, autoincrement=True)
 	user_id = Column(Integer, ForeignKey("user.id"), unique=False, nullable=False)
 	story_id = Column(Integer, ForeignKey("story.id"), unique=False, nullable=False)
+	time_created = Column(DateTime, unique=False, nullable=False)
 
 
 class Comment(Base):
@@ -45,3 +46,4 @@ class Comment(Base):
 	content = Column(String, unique=False, nullable=False)
 	user_id = Column(Integer, ForeignKey("user.id"), unique=False, nullable=False)
 	story_id = Column(Integer, ForeignKey("story.id"), unique=False, nullable=False)
+	time_created = Column(DateTime, unique=False, nullable=False)
