@@ -60,8 +60,14 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 @app.get('/verify-token')
 def verify_token(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-	helpers.decode_token(db, token)
-	return {'success': True}
+	user = helpers.decode_token(db, token)
+	user_details = schemas.ReturnUser(
+		id=user.id,
+		username=user.username,
+		name=user.name,
+		email=user.email
+	)
+	return {'user_details': user_details}
 
 @app.get('/search-spotify')
 def search_spotify(q: str):
@@ -79,10 +85,46 @@ def create_story(story: schemas.NewStory, token: str = Depends(oauth2_scheme), d
 	return {'success': True}
 
 @app.get('/all-stories')
-def all_stories(db: Session = Depends(get_db)):
-	stories = crud.all_stories(db, spotify)
+def all_stories(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	user = helpers.decode_token(db, token)
+	stories = crud.all_stories(db, spotify, user)
 	return {'stories': stories}
 
+@app.post('/like-story')
+def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.like_story(db, like)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="An error occured while trying to like this story. Please try again.")
+	return {'success': True}
+
+@app.delete('/delete-like')
+def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.delete_like(db, like)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="An error occured while trying to like this story. Please try again.")
+	return {'success': True}
+
+@app.get('/story-comments')
+def get_comments(story_id: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	comments = crud.get_comments(db, story_id)
+	return {'comments': comments}
+
+@app.post('/post-comment')
+def new_comment(comment: schemas.NewComment, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.create_comment(db, comment)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="An error occured while trying to comment. Please try again.")
+	return {'success': True}
 
 
 

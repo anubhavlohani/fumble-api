@@ -23,6 +23,26 @@ class NewStory(BaseModel):
   track_id: str
   caption: str
 
+class NewLike(BaseModel):
+  user_id: int
+  story_id: int
+
+class NewComment(BaseModel):
+  user_id: int
+  story_id: int
+  content: str
+
+class ReturnUser(BaseModel):
+  id: int
+  username: str
+  name: str
+  email: str
+
+class Comment(BaseModel):
+  user_id: int
+  username: str
+  content: str
+
 
 
 '''
@@ -55,7 +75,9 @@ class Track(Item):
 Hybrid schemas
 '''
 class DetailedStory(BaseModel):
+  id: int
   username: str
   track: Track
   caption: str
   time_created: datetime.datetime
+  liked: bool # denotes initial liked status of requesting user

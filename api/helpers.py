@@ -39,8 +39,16 @@ def authenticate_user(db: Session, form_data: OAuth2PasswordRequestForm) -> dict
 	
 	token_data = {'username': user.username}
 	access_token = create_access_token(token_data)
-
-	return {"access_token": access_token, "token_type": "bearer"}
+	user_details = schemas.ReturnUser(
+		id=user.id,
+		username=user.username,
+		name=user.name,
+		email=user.email
+	)
+	return {
+		"user_details": user_details,
+		"access_token": access_token, "token_type": "bearer"
+	}
 
 def decode_token(db: Session, token: str) -> models.User:
 	try:
