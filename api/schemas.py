@@ -39,6 +39,7 @@ class ReturnUser(BaseModel):
   email: str
 
 class Comment(BaseModel):
+  id: int
   user_id: int
   username: str
   content: str

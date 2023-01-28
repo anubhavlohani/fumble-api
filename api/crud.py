@@ -83,6 +83,7 @@ def get_comments(db: Session, story_id: str) -> list[schemas.Comment]:
 	comments = []
 	for comment in story.comments:
 		comment = schemas.Comment(
+			id=comment.id,
 			user_id=comment.user_id,
 			username=comment.user.username,
 			content=comment.content
