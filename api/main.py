@@ -111,7 +111,7 @@ def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: S
 	return {'success': True}
 
 @app.delete('/delete-like')
-def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def unlike_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	helpers.decode_token(db, token)
 	try:
 		crud.delete_like(db, like)
@@ -134,6 +134,16 @@ def new_comment(comment: schemas.NewComment, token: str = Depends(oauth2_scheme)
 	except Exception as err:
 		print(err)
 		raise HTTPException(status_code=422, detail="An error occured while trying to comment. Please try again.")
+	return {'success': True}
+
+@app.delete('/delete-comment')
+def delete_comment(comment_id: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.delete_comment(db, comment_id)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="Unable to delete comment")
 	return {'success': True}
 
 
