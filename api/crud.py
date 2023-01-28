@@ -19,16 +19,6 @@ def create_user(db: Session, user: schemas.UserSignUp) -> models.User:
 	db.refresh(db_user)
 	return db_user
 
-def create_story(db: Session, user: models.User, story: schemas.NewStory) -> models.Story:
-	story_data = story.dict()
-	story_data['user_id'] = user.id
-	story_data['time_created'] = datetime.datetime.now()
-	new_story = models.Story(**story_data)
-	db.add(new_story)
-	db.commit()
-	db.refresh(new_story)
-	return new_story
-
 def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) -> list[schemas.DetailedStory]:
 	stories = db.query(models.Story)
 	detailed_stories = []
@@ -53,6 +43,24 @@ def all_stories(db: Session, spotify: tk.Spotify, requesting_user: models.User) 
 	detailed_stories = sorted(detailed_stories, key=lambda x: x.time_created, reverse=True)
 	return detailed_stories
 
+def create_story(db: Session, user: models.User, story: schemas.NewStory) -> models.Story:
+	story_data = story.dict()
+	story_data['user_id'] = user.id
+	story_data['time_created'] = datetime.datetime.now()
+	new_story = models.Story(**story_data)
+	db.add(new_story)
+	db.commit()
+	db.refresh(new_story)
+	return new_story
+
+def delete_story(db: Session, story_id: str) -> bool:
+	to_delete = db.query(models.Story).filter(models.Story.id == story_id).first()
+	if to_delete:
+		db.delete(to_delete)
+		db.commit()
+		return True
+	return False
+
 def like_story(db: Session, like: schemas.NewLike) -> models.Like:
 	like_data = like.dict()
 	like_data['time_created'] = datetime.datetime.now()
@@ -75,6 +83,7 @@ def get_comments(db: Session, story_id: str) -> list[schemas.Comment]:
 	comments = []
 	for comment in story.comments:
 		comment = schemas.Comment(
+			id=comment.id,
 			user_id=comment.user_id,
 			username=comment.user.username,
 			content=comment.content
@@ -90,3 +99,11 @@ def create_comment(db: Session, comment: schemas.NewComment) -> models.Comment:
 	db.commit()
 	db.refresh(new_comment)
 	return new_comment
+
+def delete_comment(db: Session, comment_id: str) -> bool:
+	to_delete = db.query(models.Comment).filter(models.Comment.id == comment_id).first()
+	if to_delete:
+		db.delete(to_delete)
+		db.commit()
+		return True
+	return False

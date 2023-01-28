@@ -74,6 +74,12 @@ def search_spotify(q: str):
 	search_res = helpers.search_spotify(spotify, q)
 	return {'results': search_res}
 
+@app.get('/all-stories')
+def all_stories(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	user = helpers.decode_token(db, token)
+	stories = crud.all_stories(db, spotify, user)
+	return {'stories': stories}
+
 @app.post('/create-story')
 def create_story(story: schemas.NewStory, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	user = helpers.decode_token(db, token)
@@ -84,11 +90,15 @@ def create_story(story: schemas.NewStory, token: str = Depends(oauth2_scheme), d
 		raise HTTPException(status_code=422, detail="Unable to create new story")
 	return {'success': True}
 
-@app.get('/all-stories')
-def all_stories(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-	user = helpers.decode_token(db, token)
-	stories = crud.all_stories(db, spotify, user)
-	return {'stories': stories}
+@app.delete('/delete-story')
+def delete_story(story_id: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.delete_story(db, story_id)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="Unable to delete story")
+	return {'success': True}
 
 @app.post('/like-story')
 def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
@@ -101,7 +111,7 @@ def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: S
 	return {'success': True}
 
 @app.delete('/delete-like')
-def like_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def unlike_story(like: schemas.NewLike, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 	helpers.decode_token(db, token)
 	try:
 		crud.delete_like(db, like)
@@ -124,6 +134,16 @@ def new_comment(comment: schemas.NewComment, token: str = Depends(oauth2_scheme)
 	except Exception as err:
 		print(err)
 		raise HTTPException(status_code=422, detail="An error occured while trying to comment. Please try again.")
+	return {'success': True}
+
+@app.delete('/delete-comment')
+def delete_comment(comment_id: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+	helpers.decode_token(db, token)
+	try:
+		crud.delete_comment(db, comment_id)
+	except Exception as err:
+		print(err)
+		raise HTTPException(status_code=422, detail="Unable to delete comment")
 	return {'success': True}
 
 

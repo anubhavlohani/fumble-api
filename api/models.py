@@ -14,8 +14,8 @@ class User(Base):
 	password = Column(String, nullable=False)
 	email = Column(String, nullable=False)
 
-	stories = relationship("Story", backref="user")
-	comments = relationship("Comment", backref="user")
+	stories = relationship("Story", backref="user", cascade="all, delete-orphan")
+	comments = relationship("Comment", backref="user", cascade="all, delete-orphan")
 
 
 class Story(Base):
@@ -27,7 +27,7 @@ class Story(Base):
 	caption = Column(String, unique=False, nullable=True)
 	time_created = Column(DateTime, unique=False, nullable=False)
 
-	comments = relationship("Comment", backref="story")
+	comments = relationship("Comment", backref="story", cascade="all, delete-orphan")
 
 
 class Like(Base):
