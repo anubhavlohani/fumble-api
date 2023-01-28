@@ -99,3 +99,11 @@ def create_comment(db: Session, comment: schemas.NewComment) -> models.Comment:
 	db.commit()
 	db.refresh(new_comment)
 	return new_comment
+
+def delete_comment(db: Session, comment_id: str) -> bool:
+	to_delete = db.query(models.Comment).filter(models.Comment.id == comment_id).first()
+	if to_delete:
+		db.delete(to_delete)
+		db.commit()
+		return True
+	return False
